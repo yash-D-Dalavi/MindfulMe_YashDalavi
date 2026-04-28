@@ -1,0 +1,246 @@
+﻿@{
+    ViewBag.Title = "My Bookings";
+    var bookings = ViewBag.Bookings as System.Collections.Generic.List<MindfulMe_YashDalavi.Models.CounselorBooking>;
+}
+
+<style>
+    .my-bookings {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+        .page-header h1 {
+            color: #2D3047;
+            font-size: 2.3rem;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #6B7280;
+        }
+
+    .bookings-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .booking-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 25px;
+        align-items: center;
+    }
+
+    .b-avatar {
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6C63FF, #FF6B9D);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .b-details h3 {
+        color: #2D3047;
+        margin-bottom: 5px;
+    }
+
+    .b-spec {
+        color: #6C63FF;
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+    }
+
+    .b-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        font-size: 0.88rem;
+        color: #6B7280;
+    }
+
+        .b-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+    .b-right {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 12px;
+    }
+
+    .status-badge {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .status-Pending {
+        background: #FEF3C7;
+        color: #92400E;
+    }
+
+    .status-Confirmed {
+        background: #DBEAFE;
+        color: #1E40AF;
+    }
+
+    .status-Completed {
+        background: #D1FAE5;
+        color: #065F46;
+    }
+
+    .status-Cancelled {
+        background: #FEE2E2;
+        color: #991B1B;
+    }
+
+    .amount {
+        color: #6C63FF;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .btn-cancel {
+        background: #FEE2E2;
+        color: #991B1B;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+        .btn-cancel:hover {
+            background: #FCA5A5;
+            color: white;
+        }
+
+    .booking-id {
+        color: #9CA3AF;
+        font-size: 0.8rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 20px;
+        color: #9CA3AF;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            opacity: 0.4;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h3 {
+            color: #2D3047;
+            margin-bottom: 10px;
+        }
+
+    .btn-find {
+        background: linear-gradient(135deg, #6C63FF, #764ba2);
+        color: white;
+        padding: 12px 28px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-block;
+        margin-top: 20px;
+    }
+
+    @@media (max-width: 768px) {
+        .booking-card {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+
+        .b-right {
+            align-items: center;
+        }
+    }
+</style>
+
+<div class="my-bookings">
+    <div class="page-header">
+        <h1><i class="fas fa-calendar-check"></i> My Bookings</h1>
+        <p>Track your counseling sessions and payment history.</p>
+    </div>
+
+    @if (bookings != null && bookings.Count > 0)
+    {
+        <div class="bookings-list">
+            @foreach (var b in bookings)
+            {
+                <div class="booking-card">
+                    <div class="b-avatar">@(b.CounselorName.Length > 0 ? b.CounselorName.Substring(0, 1) : "C")</div>
+
+                    <div class="b-details">
+                        <h3>@b.CounselorName</h3>
+                        <div class="b-spec"><i class="fas fa-stethoscope"></i> @b.CounselorSpecialization</div>
+                        <div class="b-meta">
+                            <span><i class="fas fa-calendar"></i> @b.SessionDate.ToString("dd MMM yyyy, hh:mm tt")</span>
+                            <span><i class="fas fa-credit-card"></i> @b.PaymentMethod</span>
+                            <span class="booking-id"><i class="fas fa-hashtag"></i> Booking #@b.BookingId</span>
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(b.Notes))
+                        {
+                            <div style="background:#F8F9FC; padding:10px 12px; border-radius:8px; margin-top:10px; font-size:0.88rem; color:#4B5563;">
+                                <i class="fas fa-comment-dots"></i> @b.Notes
+                            </div>
+                        }
+                    </div>
+
+                    <div class="b-right">
+                        <span class="status-badge status-@b.Status">@b.Status</span>
+                        <div class="amount">₹@b.AmountPaid.ToString("N0")</div>
+                        @if (b.Status == "Pending" || b.Status == "Confirmed")
+                        {
+                            using (Html.BeginForm("Cancel", "Booking", new { id = b.BookingId }, FormMethod.Post, new { style = "margin:0;" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn-cancel" onclick="return confirm('Cancel this booking?');">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="fas fa-calendar-times"></i>
+            <h3>No bookings yet</h3>
+            <p>Start your wellness journey by booking a counselor session.</p>
+            <a href="@Url.Action("Index", "Counselor")" class="btn-find">
+                <i class="fas fa-user-md"></i> Find a Counselor
+            </a>
+        </div>
+    }
+</div>

@@ -1,0 +1,196 @@
+﻿@{
+    ViewBag.Title = "About MindfulMe";
+}
+
+<style>
+    .about-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 80px 20px;
+        text-align: center;
+    }
+
+        .about-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .about-hero p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+    .mission-section {
+        padding: 80px 20px;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .mission-box {
+        background: white;
+        padding: 50px;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+        .mission-box h2 {
+            color: #6C63FF;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .mission-box p {
+            font-size: 1.1rem;
+            color: #4B5563;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+    .values-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        margin-top: 50px;
+    }
+
+    .value-card {
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+        transition: transform 0.3s;
+        border-left: 4px solid #6C63FF;
+    }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .value-card i {
+            font-size: 2.2rem;
+            color: #6C63FF;
+            margin-bottom: 15px;
+        }
+
+        .value-card h3 {
+            color: #2D3047;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .value-card p {
+            color: #6B7280;
+            font-size: 0.95rem;
+        }
+
+    .tech-section {
+        background: #F8F9FC;
+        padding: 60px 20px;
+        text-align: center;
+    }
+
+    .tech-badges {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-top: 30px;
+    }
+
+    .tech-badge {
+        background: white;
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-weight: 600;
+        color: #6C63FF;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .author-section {
+        padding: 60px 20px;
+        text-align: center;
+    }
+
+    .author-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6C63FF, #FF6B9D);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0 auto 20px;
+    }
+</style>
+
+<section class="about-hero">
+    <h1>About MindfulMe 💙</h1>
+    <p>Supporting student mental wellness through empathy, technology, and community.</p>
+</section>
+
+<section class="mission-section">
+    <div class="mission-box">
+        <h2><i class="fas fa-bullseye"></i> Our Mission</h2>
+        <p>
+            Every student faces academic pressure, social challenges, and moments of self-doubt.
+            MindfulMe exists because seeking help shouldn't be scary, expensive, or complicated.
+            We believe small daily acts — logging a mood, taking a breath, reading a kind reply —
+            can gently rebuild mental wellness one day at a time.
+        </p>
+    </div>
+
+    <div class="values-grid">
+        <div class="value-card">
+            <i class="fas fa-heart"></i>
+            <h3>Empathy First</h3>
+            <p>Every feature is designed by asking: "Would this feel safe and supportive to a struggling student?"</p>
+        </div>
+        <div class="value-card">
+            <i class="fas fa-user-shield"></i>
+            <h3>Privacy Protected</h3>
+            <p>Peer Wall posts are anonymous. Your name is never shown. Your data is never sold.</p>
+        </div>
+        <div class="value-card">
+            <i class="fas fa-seedling"></i>
+            <h3>Small Steps, Big Change</h3>
+            <p>Streaks, gentle reminders, and bite-sized activities help you build habits that stick.</p>
+        </div>
+        <div class="value-card">
+            <i class="fas fa-handshake"></i>
+            <h3>Professional Support</h3>
+            <p>Connect with verified counselors when you need deeper help — at affordable session rates.</p>
+        </div>
+    </div>
+</section>
+
+<section class="tech-section">
+    <h2 style="color:#2D3047;">Built with Modern Technology</h2>
+    <p style="color:#6B7280; margin-top:10px;">A full-stack web application crafted with care</p>
+    <div class="tech-badges">
+        <div class="tech-badge"><i class="fab fa-microsoft"></i> ASP.NET MVC 5</div>
+        <div class="tech-badge"><i class="fas fa-code"></i> C#</div>
+        <div class="tech-badge"><i class="fas fa-database"></i> SQL Server</div>
+        <div class="tech-badge"><i class="fas fa-plug"></i> ADO.NET</div>
+        <div class="tech-badge"><i class="fab fa-html5"></i> Razor Views</div>
+        <div class="tech-badge"><i class="fab fa-css3-alt"></i> Modern CSS</div>
+    </div>
+</section>
+
+<section class="author-section">
+    <div class="author-avatar">YD</div>
+    <h2 style="color:#2D3047;">Built by Yash Dalavi</h2>
+    <p style="color:#6B7280; margin-top:10px; max-width:600px; margin-left:auto; margin-right:auto;">
+        Third year B.Tech Computer Engineering student at MIT Academy of Engineering.
+        This project was built as part of the Web and Desktop Application Development course
+        to demonstrate full-stack development skills while addressing a topic that genuinely matters — student mental wellness.
+    </p>
+</section>

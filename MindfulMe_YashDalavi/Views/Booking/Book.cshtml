@@ -1,0 +1,330 @@
+﻿@{
+    ViewBag.Title = "Book Session";
+    var counselor = ViewBag.Counselor as MindfulMe_YashDalavi.Models.Counselor;
+    string minDate = ViewBag.MinDate as string ?? "";
+}
+
+<style>
+    .book-page {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .back-link {
+        color: #6C63FF;
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: inline-block;
+    }
+
+    .book-layout {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 30px;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+    }
+
+        .form-card h1 {
+            color: #2D3047;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .form-card .subtitle {
+            color: #6B7280;
+            margin-bottom: 30px;
+        }
+
+    .form-section {
+        margin-bottom: 25px;
+    }
+
+        .form-section label {
+            display: block;
+            font-weight: 600;
+            color: #2D3047;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .form-section input[type=datetime-local],
+        .form-section textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+            .form-section input:focus, .form-section textarea:focus {
+                outline: none;
+                border-color: #6C63FF;
+            }
+
+        .form-section textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+    .payment-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+    }
+
+    .payment-option {
+        background: #F8F9FC;
+        border: 2px solid transparent;
+        border-radius: 12px;
+        padding: 18px 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+        .payment-option:hover {
+            background: #EEF1FF;
+            transform: translateY(-2px);
+        }
+
+        .payment-option.selected {
+            background: linear-gradient(135deg, #EEF1FF, #E0E7FF);
+            border-color: #6C63FF;
+        }
+
+        .payment-option i {
+            font-size: 1.8rem;
+            color: #6C63FF;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .payment-option span {
+            font-weight: 600;
+            color: #2D3047;
+            font-size: 0.9rem;
+        }
+
+    .btn-confirm {
+        width: 100%;
+        background: linear-gradient(135deg, #6C63FF, #764ba2);
+        color: white;
+        padding: 16px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(108, 99, 255, 0.3);
+        }
+
+        .btn-confirm:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    .summary-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+        height: fit-content;
+        position: sticky;
+        top: 120px;
+    }
+
+    .summary-header {
+        text-align: center;
+        padding-bottom: 20px;
+        border-bottom: 2px dashed #E5E7EB;
+        margin-bottom: 20px;
+    }
+
+    .c-avatar {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6C63FF, #FF6B9D);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 0 auto 15px;
+    }
+
+    .summary-header h3 {
+        color: #2D3047;
+        margin-bottom: 5px;
+    }
+
+    .summary-header .spec {
+        color: #6C63FF;
+        font-size: 0.9rem;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        color: #4B5563;
+        font-size: 0.95rem;
+    }
+
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+        padding-top: 15px;
+        border-top: 2px solid #E5E7EB;
+        margin-top: 10px;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #2D3047;
+    }
+
+        .summary-total span:last-child {
+            color: #6C63FF;
+        }
+
+    .secure-badge {
+        background: #D1FAE5;
+        color: #065F46;
+        padding: 10px 15px;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 0.85rem;
+        margin-top: 15px;
+    }
+
+    @@media (max-width: 860px) {
+        .book-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .summary-card {
+            position: static;
+        }
+    }
+</style>
+
+<div class="book-page">
+    <a href="@Url.Action("Details", "Counselor", new { id = counselor.CounselorId })" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to counselor
+    </a>
+
+    <div class="book-layout">
+        <div class="form-card">
+            <h1><i class="fas fa-calendar-plus"></i> Book Your Session</h1>
+            <p class="subtitle">Fill the details to confirm your booking.</p>
+
+            @using (Html.BeginForm("Book", "Booking", FormMethod.Post, new { id = "bookForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="counselorId" value="@counselor.CounselorId" />
+                <input type="hidden" name="paymentMethod" id="paymentMethodInput" value="" />
+
+                <div class="form-section">
+                    <label><i class="fas fa-calendar"></i> Pick Session Date & Time</label>
+                    <input type="datetime-local" name="sessionDate" required min="@minDate" />
+                </div>
+
+                <div class="form-section">
+                    <label><i class="fas fa-credit-card"></i> Select Payment Method</label>
+                    <div class="payment-grid">
+                        <div class="payment-option" data-method="UPI">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>UPI</span>
+                        </div>
+                        <div class="payment-option" data-method="Card">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Card</span>
+                        </div>
+                        <div class="payment-option" data-method="NetBanking">
+                            <i class="fas fa-university"></i>
+                            <span>Net Banking</span>
+                        </div>
+                        <div class="payment-option" data-method="Wallet">
+                            <i class="fas fa-wallet"></i>
+                            <span>Wallet</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label><i class="fas fa-comment"></i> Notes (optional)</label>
+                    <textarea name="notes" maxlength="500" placeholder="Anything you'd like your counselor to know before the session..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-confirm" id="confirmBtn" disabled>
+                    <i class="fas fa-lock"></i> Confirm & Pay ₹@counselor.FeePerSession.ToString("N0")
+                </button>
+            }
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-header">
+                <div class="c-avatar">@(counselor.FullName.Length > 0 ? counselor.FullName.Substring(0, 1) : "C")</div>
+                <h3>@counselor.FullName</h3>
+                <div class="spec">@counselor.Specialization</div>
+            </div>
+
+            <div class="summary-row">
+                <span>Session Fee</span>
+                <strong>₹@counselor.FeePerSession.ToString("N0")</strong>
+            </div>
+            <div class="summary-row">
+                <span>Platform Fee</span>
+                <strong>₹0</strong>
+            </div>
+            <div class="summary-row">
+                <span>GST</span>
+                <strong>Included</strong>
+            </div>
+
+            <div class="summary-total">
+                <span>Total</span>
+                <span>₹@counselor.FeePerSession.ToString("N0")</span>
+            </div>
+
+            <div class="secure-badge">
+                <i class="fas fa-shield-alt"></i> Secure encrypted payment
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        (function () {
+            var options = document.querySelectorAll('.payment-option');
+            var input = document.getElementById('paymentMethodInput');
+            var btn = document.getElementById('confirmBtn');
+
+            options.forEach(function (opt) {
+                opt.addEventListener('click', function () {
+                    options.forEach(function (o) { o.classList.remove('selected'); });
+                    opt.classList.add('selected');
+                    input.value = opt.getAttribute('data-method');
+                    btn.disabled = false;
+                });
+            });
+        })();
+    </script>
+}

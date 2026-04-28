@@ -1,0 +1,314 @@
+﻿@{
+    ViewBag.Title = "Mood History";
+    int days = ViewBag.Days ?? 30;
+    var entries = ViewBag.Entries as System.Collections.Generic.List<MindfulMe_YashDalavi.Models.MoodEntry>;
+    var distribution = ViewBag.Distribution as System.Collections.Generic.Dictionary<string, int>;
+    int totalEntries = entries != null ? entries.Count : 0;
+
+    var colors = new Dictionary<string, string> {
+        { "Very Happy", "#10B981" }, { "Happy", "#34D399" },
+        { "Neutral", "#FBBF24" }, { "Sad", "#F87171" }, { "Very Sad", "#EF4444" }
+    };
+    var emojis = new Dictionary<string, string> {
+        { "Very Happy", "😄" }, { "Happy", "🙂" },
+        { "Neutral", "😐" }, { "Sad", "😟" }, { "Very Sad", "😢" }
+    };
+}
+
+<style>
+    .history-page {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .history-header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+        .history-header h1 {
+            color: #2D3047;
+            font-size: 2.3rem;
+            margin-bottom: 8px;
+        }
+
+        .history-header p {
+            color: #6B7280;
+        }
+
+    .filter-tabs {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+
+    .filter-tab {
+        padding: 10px 24px;
+        border-radius: 50px;
+        background: white;
+        color: #6C63FF;
+        border: 2px solid #6C63FF;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+        .filter-tab.active, .filter-tab:hover {
+            background: #6C63FF;
+            color: white;
+        }
+
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 20px;
+        margin-bottom: 35px;
+    }
+
+    .stat-box {
+        background: white;
+        padding: 25px;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+    }
+
+        .stat-box h3 {
+            color: #6B7280;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .stat-box .big-num {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #6C63FF;
+        }
+
+    .distribution-card {
+        background: white;
+        padding: 35px;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+        margin-bottom: 30px;
+    }
+
+        .distribution-card h2 {
+            color: #2D3047;
+            margin-bottom: 25px;
+        }
+
+    .dist-bar {
+        display: grid;
+        grid-template-columns: 120px 1fr 50px;
+        gap: 15px;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .dist-label {
+        font-weight: 500;
+        color: #4B5563;
+    }
+
+    .dist-track {
+        background: #F3F4F6;
+        border-radius: 10px;
+        height: 24px;
+        overflow: hidden;
+    }
+
+    .dist-fill {
+        height: 100%;
+        border-radius: 10px;
+        transition: width 0.6s;
+        display: flex;
+        align-items: center;
+        padding-left: 10px;
+        color: white;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .dist-count {
+        text-align: right;
+        color: #6B7280;
+        font-weight: 600;
+    }
+
+    .entries-card {
+        background: white;
+        padding: 35px;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+    }
+
+        .entries-card h2 {
+            color: #2D3047;
+            margin-bottom: 20px;
+        }
+
+    .entry-row {
+        display: grid;
+        grid-template-columns: 60px 1fr auto auto;
+        gap: 15px;
+        align-items: center;
+        padding: 15px;
+        background: #F8F9FC;
+        border-radius: 12px;
+        margin-bottom: 10px;
+    }
+
+        .entry-row .emoji {
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        .entry-row .label {
+            font-weight: 600;
+            color: #2D3047;
+        }
+
+        .entry-row .note {
+            color: #6B7280;
+            font-size: 0.9rem;
+            margin-top: 3px;
+        }
+
+        .entry-row .date {
+            color: #9CA3AF;
+            font-size: 0.85rem;
+        }
+
+    .btn-delete {
+        background: #FEE2E2;
+        color: #991B1B;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+        .btn-delete:hover {
+            background: #FCA5A5;
+            color: white;
+        }
+
+    .empty {
+        text-align: center;
+        padding: 50px;
+        color: #9CA3AF;
+    }
+
+        .empty i {
+            font-size: 3rem;
+            opacity: 0.5;
+            margin-bottom: 15px;
+        }
+</style>
+
+<div class="history-page">
+    <div class="history-header">
+        <h1><i class="fas fa-chart-line"></i> Your Mood Journey</h1>
+        <p>Spot patterns and understand your emotional trends.</p>
+    </div>
+
+    <div class="filter-tabs">
+        <a href="@Url.Action("History", "Mood", new { days = 7 })"
+           class="filter-tab @(days == 7 ? "active" : "")">Last 7 Days</a>
+        <a href="@Url.Action("History", "Mood", new { days = 30 })"
+           class="filter-tab @(days == 30 ? "active" : "")">Last 30 Days</a>
+        <a href="@Url.Action("History", "Mood", new { days = 90 })"
+           class="filter-tab @(days == 90 ? "active" : "")">Last 90 Days</a>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-box">
+            <h3>Total Entries</h3>
+            <div class="big-num">@totalEntries</div>
+        </div>
+        <div class="stat-box">
+            <h3>Happy Days 😄</h3>
+            <div class="big-num">@(distribution != null ? distribution["Very Happy"] + distribution["Happy"] : 0)</div>
+        </div>
+        <div class="stat-box">
+            <h3>Neutral Days 😐</h3>
+            <div class="big-num">@(distribution != null ? distribution["Neutral"] : 0)</div>
+        </div>
+        <div class="stat-box">
+            <h3>Tough Days 😢</h3>
+            <div class="big-num">@(distribution != null ? distribution["Sad"] + distribution["Very Sad"] : 0)</div>
+        </div>
+    </div>
+
+    @if (distribution != null && totalEntries > 0)
+    {
+        <div class="distribution-card">
+            <h2><i class="fas fa-chart-bar"></i> Mood Distribution</h2>
+
+            @foreach (var kvp in distribution)
+            {
+                int count = kvp.Value;
+                double pct = totalEntries > 0 ? (count * 100.0 / totalEntries) : 0;
+                string pctText = pct.ToString("F0");
+                string widthStyle = "width: " + pctText + "%; background: " + colors[kvp.Key] + ";";
+
+                <div class="dist-bar">
+                    <div class="dist-label">@emojis[kvp.Key] @kvp.Key</div>
+                    <div class="dist-track">
+                        <div class="dist-fill" style="@widthStyle">
+                            @if (pct > 10)
+                            {
+                                <span>@pctText%</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="dist-count">@count</div>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="entries-card">
+        <h2><i class="fas fa-list"></i> All Entries</h2>
+
+        @if (entries != null && entries.Count > 0)
+        {
+            foreach (var e in entries)
+            {
+                <div class="entry-row">
+                    <div class="emoji">@e.MoodEmoji</div>
+                    <div>
+                        <div class="label">@e.MoodLabel</div>
+                        @if (!string.IsNullOrWhiteSpace(e.Note))
+                        {
+                            <div class="note">@e.Note</div>
+                        }
+                    </div>
+                    <div class="date">@e.EntryDate.ToString("dd MMM yyyy, hh:mm tt")</div>
+                    <div>
+                        @using (Html.BeginForm("Delete", "Mood", new { id = e.MoodId }, FormMethod.Post, new { style = "display:inline;" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn-delete" onclick="return confirm('Delete this entry?');">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty">
+                <i class="fas fa-inbox"></i>
+                <p>No entries in this period. <a href="@Url.Action("Add", "Mood")" style="color:#6C63FF;">Log one now</a>!</p>
+            </div>
+        }
+    </div>
+</div>

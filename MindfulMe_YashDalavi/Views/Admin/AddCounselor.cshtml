@@ -1,0 +1,158 @@
+﻿@{
+    ViewBag.Title = "Add New Counselor";
+}
+
+<style>
+    .form-page {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    .back-link {
+        color: #6C63FF;
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: inline-block;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+    }
+
+        .form-card h1 {
+            color: #2D3047;
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+        }
+
+        .form-card .subtitle {
+            color: #6B7280;
+            margin-bottom: 25px;
+        }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 18px;
+    }
+
+    .form-field label {
+        display: block;
+        font-weight: 600;
+        color: #2D3047;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+    }
+
+    .form-field input, .form-field textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 2px solid #E5E7EB;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 0.95rem;
+    }
+
+        .form-field input:focus, .form-field textarea:focus {
+            outline: none;
+            border-color: #6C63FF;
+        }
+
+    .form-field textarea {
+        min-height: 90px;
+        resize: vertical;
+    }
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+
+    .btn-submit {
+        width: 100%;
+        background: linear-gradient(135deg, #10B981, #059669);
+        color: white;
+        padding: 14px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        font-family: inherit;
+        margin-top: 10px;
+    }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+    @@media (max-width: 600px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="form-page">
+    <a href="@Url.Action("Counselors", "Admin")" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to counselors
+    </a>
+
+    <div class="form-card">
+        <h1><i class="fas fa-user-plus"></i> Add New Counselor</h1>
+        <p class="subtitle">Fill in the details of the new counselor to add them to the platform.</p>
+
+        @using (Html.BeginForm("AddCounselor", "Admin", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label><i class="fas fa-user"></i> Full Name *</label>
+                    <input type="text" name="FullName" required placeholder="Dr. Amit Joshi" />
+                </div>
+                <div class="form-field">
+                    <label><i class="fas fa-stethoscope"></i> Specialization *</label>
+                    <input type="text" name="Specialization" required placeholder="e.g. Anxiety & Stress" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" name="Email" placeholder="counselor@example.com" />
+                </div>
+                <div class="form-field">
+                    <label><i class="fas fa-phone"></i> Phone</label>
+                    <input type="text" name="Phone" placeholder="+91 98765 43210" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label><i class="fas fa-clock"></i> Experience (years)</label>
+                    <input type="number" name="ExperienceYears" min="0" max="50" value="5" />
+                </div>
+                <div class="form-field">
+                    <label><i class="fas fa-rupee-sign"></i> Fee per session</label>
+                    <input type="number" name="FeePerSession" step="0.01" min="0" value="1000" />
+                </div>
+            </div>
+
+            <div class="form-field full-width" style="margin-bottom:20px;">
+                <label><i class="fas fa-info-circle"></i> Short Bio</label>
+                <textarea name="Bio" maxlength="500" placeholder="Brief description of expertise and approach..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-check"></i> Add Counselor
+            </button>
+        }
+    </div>
+</div>

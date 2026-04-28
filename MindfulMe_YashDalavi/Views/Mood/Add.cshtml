@@ -1,0 +1,264 @@
+﻿@{
+    ViewBag.Title = "Log Your Mood";
+    var existing = ViewBag.TodayMood as MindfulMe_YashDalavi.Models.MoodEntry;
+}
+
+<style>
+    .add-page {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .add-card {
+        background: white;
+        padding: 40px;
+        border-radius: 24px;
+        box-shadow: 0 4px 30px rgba(108, 99, 255, 0.1);
+    }
+
+        .add-card h1 {
+            text-align: center;
+            color: #2D3047;
+            margin-bottom: 8px;
+            font-size: 2rem;
+        }
+
+        .add-card .subtitle {
+            text-align: center;
+            color: #6B7280;
+            margin-bottom: 35px;
+        }
+
+    .existing-banner {
+        background: #FEF3C7;
+        color: #92400E;
+        padding: 12px 18px;
+        border-radius: 12px;
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 0.95rem;
+    }
+
+    .mood-label-input {
+        display: block;
+        font-weight: 600;
+        color: #2D3047;
+        margin-bottom: 15px;
+        text-align: center;
+        font-size: 1.1rem;
+    }
+
+    .emoji-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+        margin-bottom: 30px;
+    }
+
+    .emoji-option {
+        background: #F8F9FC;
+        border: 3px solid transparent;
+        border-radius: 16px;
+        padding: 20px 10px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.3s;
+    }
+
+        .emoji-option:hover {
+            background: #EEF1FF;
+            transform: translateY(-3px);
+        }
+
+        .emoji-option.selected {
+            background: linear-gradient(135deg, #EEF1FF, #E0E7FF);
+            border-color: #6C63FF;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(108, 99, 255, 0.25);
+        }
+
+        .emoji-option .emoji {
+            font-size: 2.8rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .emoji-option .label {
+            font-size: 0.85rem;
+            color: #4B5563;
+            font-weight: 500;
+        }
+
+    .note-field {
+        margin-bottom: 25px;
+    }
+
+        .note-field label {
+            display: block;
+            font-weight: 600;
+            color: #2D3047;
+            margin-bottom: 10px;
+        }
+
+        .note-field textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.3s;
+        }
+
+            .note-field textarea:focus {
+                outline: none;
+                border-color: #6C63FF;
+            }
+
+    .char-counter {
+        text-align: right;
+        color: #9CA3AF;
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+
+    .form-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+    .btn-submit {
+        flex: 1;
+        background: linear-gradient(135deg, #6C63FF, #764ba2);
+        color: white;
+        padding: 15px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(108, 99, 255, 0.3);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    .btn-cancel {
+        background: white;
+        border: 2px solid #E5E7EB;
+        color: #6B7280;
+        padding: 15px 30px;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.3s;
+    }
+
+        .btn-cancel:hover {
+            background: #F8F9FC;
+        }
+</style>
+
+<div class="add-page">
+    <div class="add-card">
+        <h1>Log Your Mood 💭</h1>
+        <p class="subtitle">Take a breath. How are you really feeling right now?</p>
+
+        @if (existing != null)
+        {
+            <div class="existing-banner">
+                <i class="fas fa-info-circle"></i>
+                You already logged <strong>@existing.MoodEmoji @existing.MoodLabel</strong> today.
+                Logging again will add a new entry.
+            </div>
+        }
+
+        @using (Html.BeginForm("Add", "Mood", FormMethod.Post, new { id = "moodForm" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <label class="mood-label-input">Pick an emoji that matches your mood</label>
+
+            <div class="emoji-grid">
+                <div class="emoji-option" data-level="1" data-emoji="😢">
+                    <span class="emoji">😢</span>
+                    <span class="label">Very Sad</span>
+                </div>
+                <div class="emoji-option" data-level="2" data-emoji="😟">
+                    <span class="emoji">😟</span>
+                    <span class="label">Sad</span>
+                </div>
+                <div class="emoji-option" data-level="3" data-emoji="😐">
+                    <span class="emoji">😐</span>
+                    <span class="label">Neutral</span>
+                </div>
+                <div class="emoji-option" data-level="4" data-emoji="🙂">
+                    <span class="emoji">🙂</span>
+                    <span class="label">Happy</span>
+                </div>
+                <div class="emoji-option" data-level="5" data-emoji="😄">
+                    <span class="emoji">😄</span>
+                    <span class="label">Very Happy</span>
+                </div>
+            </div>
+
+            <input type="hidden" id="moodLevel" name="moodLevel" value="" />
+            <input type="hidden" id="moodEmoji" name="moodEmoji" value="" />
+
+            <div class="note-field">
+                <label for="note"><i class="fas fa-pen"></i> Add a note (optional)</label>
+                <textarea id="note" name="note" maxlength="500"
+                          placeholder="What's on your mind? Any thoughts, wins, worries, or just reflections..."></textarea>
+                <div class="char-counter"><span id="charCount">0</span> / 500</div>
+            </div>
+
+            <div class="form-buttons">
+                <a href="@Url.Action("Index", "Mood")" class="btn-cancel">Cancel</a>
+                <button type="submit" id="submitBtn" class="btn-submit" disabled>
+                    <i class="fas fa-save"></i> Save Mood
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        (function () {
+            var options = document.querySelectorAll('.emoji-option');
+            var levelInput = document.getElementById('moodLevel');
+            var emojiInput = document.getElementById('moodEmoji');
+            var submitBtn = document.getElementById('submitBtn');
+            var noteArea = document.getElementById('note');
+            var charCount = document.getElementById('charCount');
+
+            options.forEach(function (opt) {
+                opt.addEventListener('click', function () {
+                    options.forEach(function (o) { o.classList.remove('selected'); });
+                    opt.classList.add('selected');
+                    levelInput.value = opt.getAttribute('data-level');
+                    emojiInput.value = opt.getAttribute('data-emoji');
+                    submitBtn.disabled = false;
+                });
+            });
+
+            noteArea.addEventListener('input', function () {
+                charCount.textContent = noteArea.value.length;
+            });
+        })();
+    </script>
+}

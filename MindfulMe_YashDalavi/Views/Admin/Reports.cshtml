@@ -1,0 +1,211 @@
+﻿@{
+    ViewBag.Title = "Reported Posts";
+    var reported = ViewBag.ReportedPosts as System.Collections.Generic.List<MindfulMe_YashDalavi.Models.PeerPost>;
+}
+
+<style>
+    .admin-page {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    .admin-header {
+        background: linear-gradient(135deg, #1F2937, #374151);
+        color: white;
+        padding: 30px 35px;
+        border-radius: 20px;
+        margin-bottom: 25px;
+    }
+
+        .admin-header h1 {
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+        }
+
+        .admin-header p {
+            opacity: 0.85;
+            font-size: 0.9rem;
+        }
+
+    .admin-nav {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+    }
+
+        .admin-nav a {
+            padding: 10px 22px;
+            background: white;
+            border: 2px solid #E5E7EB;
+            color: #4B5563;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+            .admin-nav a.active, .admin-nav a:hover {
+                background: #6C63FF;
+                color: white;
+                border-color: #6C63FF;
+            }
+
+    .reported-card {
+        background: white;
+        border-left: 5px solid #F97316;
+        padding: 25px;
+        border-radius: 16px;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .r-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .r-author {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #2D3047;
+        font-weight: 600;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6C63FF, #FF6B9D);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+    }
+
+    .r-meta {
+        color: #9CA3AF;
+        font-size: 0.85rem;
+    }
+
+    .flag-badge {
+        background: #FEF3C7;
+        color: #92400E;
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .r-content {
+        color: #374151;
+        line-height: 1.7;
+        padding: 15px;
+        background: #F8F9FC;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+
+    .r-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-hide {
+        background: #991B1B;
+        color: white;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+        .btn-hide:hover {
+            background: #7F1D1D;
+        }
+
+    .empty {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+        .empty i {
+            font-size: 3rem;
+            color: #10B981;
+            opacity: 0.5;
+            margin-bottom: 15px;
+        }
+
+        .empty h3 {
+            color: #2D3047;
+            margin-bottom: 10px;
+        }
+
+        .empty p {
+            color: #6B7280;
+        }
+</style>
+
+<div class="admin-page">
+    <div class="admin-header">
+        <h1><i class="fas fa-flag"></i> Reported Posts</h1>
+        <p>Review community-flagged content and take action.</p>
+    </div>
+
+    <div class="admin-nav">
+        <a href="@Url.Action("Index", "Admin")"><i class="fas fa-chart-pie"></i> Overview</a>
+        <a href="@Url.Action("Counselors", "Admin")"><i class="fas fa-user-md"></i> Counselors</a>
+        <a href="@Url.Action("Reports", "Admin")" class="active"><i class="fas fa-flag"></i> Reported Posts</a>
+    </div>
+
+    @if (reported != null && reported.Count > 0)
+    {
+        foreach (var p in reported)
+        {
+            <div class="reported-card">
+                <div class="r-header">
+                    <div class="r-author">
+                        <div class="avatar">@(p.AnonymousName.Length > 0 ? p.AnonymousName.Substring(0, 1) : "?")</div>
+                        <div>
+                            <div>@p.AnonymousName</div>
+                            <div class="r-meta">@p.PostedOn.ToString("dd MMM yyyy, hh:mm tt")</div>
+                        </div>
+                    </div>
+                    <span class="flag-badge"><i class="fas fa-flag"></i> Reported</span>
+                </div>
+
+                <div class="r-content">@p.Content</div>
+
+                <div class="r-actions">
+                    @using (Html.BeginForm("HidePost", "Admin", new { id = p.PostId }, FormMethod.Post, new { style = "margin:0;" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn-hide" onclick="return confirm('Permanently hide this post from the wall?');">
+                            <i class="fas fa-eye-slash"></i> Hide Post
+                        </button>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="empty">
+            <i class="fas fa-check-circle"></i>
+            <h3>All Clear!</h3>
+            <p>No reported posts at the moment. The community is healthy.</p>
+        </div>
+    }
+</div>

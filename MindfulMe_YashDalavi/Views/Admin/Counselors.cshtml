@@ -1,0 +1,197 @@
+﻿@{
+    ViewBag.Title = "Manage Counselors";
+    var counselors = ViewBag.Counselors as System.Collections.Generic.List<MindfulMe_YashDalavi.Models.Counselor>;
+}
+
+<style>
+    .admin-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    .admin-header {
+        background: linear-gradient(135deg, #1F2937, #374151);
+        color: white;
+        padding: 30px 35px;
+        border-radius: 20px;
+        margin-bottom: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+        .admin-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .admin-header p {
+            opacity: 0.85;
+            font-size: 0.9rem;
+        }
+
+    .btn-add {
+        background: linear-gradient(135deg, #10B981, #059669);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .admin-nav {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+    }
+
+        .admin-nav a {
+            padding: 10px 22px;
+            background: white;
+            border: 2px solid #E5E7EB;
+            color: #4B5563;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+            .admin-nav a.active, .admin-nav a:hover {
+                background: #6C63FF;
+                color: white;
+                border-color: #6C63FF;
+            }
+
+    .counselor-table {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: #F8F9FC;
+        padding: 15px;
+        text-align: left;
+        color: #2D3047;
+        font-weight: 600;
+        font-size: 0.85rem;
+        border-bottom: 2px solid #E5E7EB;
+    }
+
+    td {
+        padding: 15px;
+        border-bottom: 1px solid #F3F4F6;
+        color: #4B5563;
+        font-size: 0.9rem;
+    }
+
+    tr:hover {
+        background: #F9FAFB;
+    }
+
+    .avatar-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .av-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6C63FF, #FF6B9D);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+    }
+
+    .btn-del {
+        background: #FEE2E2;
+        color: #991B1B;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+        .btn-del:hover {
+            background: #FCA5A5;
+            color: white;
+        }
+</style>
+
+<div class="admin-page">
+    <div class="admin-header">
+        <div>
+            <h1><i class="fas fa-user-md"></i> Manage Counselors</h1>
+            <p>Add, remove and view all platform counselors.</p>
+        </div>
+        <a href="@Url.Action("AddCounselor", "Admin")" class="btn-add">
+            <i class="fas fa-plus"></i> Add New Counselor
+        </a>
+    </div>
+
+    <div class="admin-nav">
+        <a href="@Url.Action("Index", "Admin")"><i class="fas fa-chart-pie"></i> Overview</a>
+        <a href="@Url.Action("Counselors", "Admin")" class="active"><i class="fas fa-user-md"></i> Counselors</a>
+        <a href="@Url.Action("Reports", "Admin")"><i class="fas fa-flag"></i> Reported Posts</a>
+    </div>
+
+    <div class="counselor-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Counselor</th>
+                    <th>Specialization</th>
+                    <th>Experience</th>
+                    <th>Fee</th>
+                    <th>Contact</th>
+                    <th style="text-align:center;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (counselors != null)
+                {
+                    foreach (var c in counselors)
+                    {
+                        <tr>
+                            <td>
+                                <div class="avatar-cell">
+                                    <div class="av-circle">@(c.FullName.Length > 0 ? c.FullName.Substring(0, 1) : "C")</div>
+                                    <strong>@c.FullName</strong>
+                                </div>
+                            </td>
+                            <td>@c.Specialization</td>
+                            <td>@c.ExperienceYears yrs</td>
+                            <td><strong style="color:#6C63FF;">₹@c.FeePerSession.ToString("N0")</strong></td>
+                            <td style="font-size:0.85rem;">@c.Email</td>
+                            <td style="text-align:center;">
+                                @using (Html.BeginForm("DeleteCounselor", "Admin", new { id = c.CounselorId }, FormMethod.Post, new { style = "margin:0;" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn-del" onclick="return confirm('Remove this counselor?');">
+                                        <i class="fas fa-trash"></i> Remove
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

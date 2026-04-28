@@ -1,0 +1,372 @@
+﻿@{
+    ViewBag.Title = "MindfulMe - Your Mental Wellness Companion";
+    var counselors = ViewBag.FeaturedCounselors as IEnumerable<MindfulMe_YashDalavi.Models.Counselor>;
+    var activities = ViewBag.FeaturedActivities as IEnumerable<MindfulMe_YashDalavi.Models.Activity>;
+}
+
+<style>
+    .hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 100px 20px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 20s infinite ease-in-out;
+        }
+
+    @@keyframes float {
+        0%, 100% {
+            transform: translate(0, 0);
+        }
+
+        50% {
+            transform: translate(50px, 50px);
+        }
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .hero h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+
+    .hero p {
+        font-size: 1.25rem;
+        margin-bottom: 35px;
+        opacity: 0.95;
+    }
+
+    .hero-cta {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-hero {
+        background: white;
+        color: #6C63FF;
+        padding: 15px 35px;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 1.05rem;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-hero:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+    .btn-hero-outline {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+
+    .stats-bar {
+        background: white;
+        padding: 40px 20px;
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 30px;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+        .stat-item h3 {
+            font-size: 2.5rem;
+            color: #6C63FF;
+            font-weight: 700;
+        }
+
+        .stat-item p {
+            color: #6B7280;
+            font-size: 0.95rem;
+        }
+
+    .section {
+        padding: 80px 20px;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #2D3047;
+        }
+
+        .section-header p {
+            color: #6B7280;
+            font-size: 1.1rem;
+        }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 35px 25px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+        transition: all 0.3s;
+        border-top: 4px solid transparent;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-top-color: #6C63FF;
+            box-shadow: 0 12px 40px rgba(108, 99, 255, 0.15);
+        }
+
+    .feature-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #6C63FF, #764ba2);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: white;
+        font-size: 1.8rem;
+    }
+
+    .feature-card h3 {
+        margin-bottom: 12px;
+        color: #2D3047;
+    }
+
+    .feature-card p {
+        color: #6B7280;
+        font-size: 0.95rem;
+    }
+
+    .counselor-preview {
+        background: #F8F9FC;
+    }
+
+    .counselor-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .counselor-card {
+        background: white;
+        padding: 25px;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        transition: transform 0.3s;
+    }
+
+        .counselor-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .counselor-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6C63FF, #FF6B9D);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .counselor-card h4 {
+        color: #2D3047;
+        margin-bottom: 5px;
+    }
+
+    .counselor-spec {
+        color: #6C63FF;
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+
+    .counselor-exp {
+        color: #6B7280;
+        font-size: 0.85rem;
+    }
+
+    .quote-section {
+        background: linear-gradient(135deg, #EEF1FF 0%, #FFE5EC 100%);
+        padding: 80px 20px;
+        text-align: center;
+    }
+
+    .quote-text {
+        font-size: 1.8rem;
+        font-style: italic;
+        color: #2D3047;
+        max-width: 700px;
+        margin: 0 auto 20px;
+        line-height: 1.5;
+    }
+
+    .quote-author {
+        color: #6B7280;
+    }
+
+    @@media (max-width: 768px) {
+        .hero h1 {
+            font-size: 2.2rem;
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>Your Mind Matters 💙</h1>
+        <p>Track your mood, find calm with breathing exercises, connect with counselors, and join an anonymous community of students who understand.</p>
+        <div class="hero-cta">
+            @if (Request.IsAuthenticated)
+            {
+                <a href="@Url.Action("Index", "Dashboard")" class="btn-hero">
+                    <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                </a>
+                <a href="@Url.Action("Add", "Mood")" class="btn-hero btn-hero-outline">
+                    <i class="fas fa-smile"></i> Log Today's Mood
+                </a>
+            }
+            else
+            {
+                <a href="@Url.Action("Register", "Account")" class="btn-hero">
+                    <i class="fas fa-rocket"></i> Get Started Free
+                </a>
+                <a href="@Url.Action("Login", "Account")" class="btn-hero btn-hero-outline">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<div class="stats-bar">
+    <div class="stat-item"><h3>@(counselors != null ? counselors.Count() : 0)+</h3><p>Verified Counselors</p></div>
+    <div class="stat-item"><h3>@(activities != null ? activities.Count() : 0)+</h3><p>Wellness Activities</p></div>
+    <div class="stat-item"><h3>100%</h3><p>Anonymous Support</p></div>
+    <div class="stat-item"><h3>24/7</h3><p>Crisis Resources</p></div>
+</div>
+
+<section class="section">
+    <div class="section-header">
+        <h2>Everything You Need in One Place</h2>
+        <p>Comprehensive tools for your mental wellness journey</p>
+    </div>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-smile-beam"></i></div>
+            <h3>Mood Tracking</h3>
+            <p>Log your daily mood with emojis, add notes, and see patterns emerge over time with beautiful analytics.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-leaf"></i></div>
+            <h3>Guided Activities</h3>
+            <p>Breathing exercises, meditation, and grounding techniques — all backed by research.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-user-md"></i></div>
+            <h3>Book Counselors</h3>
+            <p>Connect with verified mental health professionals for one-on-one sessions.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-comments"></i></div>
+            <h3>Peer Support Wall</h3>
+            <p>Share anonymously, support others, find community — your identity stays safe.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-fire"></i></div>
+            <h3>Streak Tracking</h3>
+            <p>Build healthy habits with daily streaks and celebrate consistent self-care.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+            <h3>Visual Reports</h3>
+            <p>Beautiful charts showing your mood trends, activity patterns, and progress.</p>
+        </div>
+    </div>
+</section>
+
+@if (counselors != null && counselors.Any())
+{
+    <section class="section counselor-preview">
+        <div class="section-header">
+            <h2>Our Expert Counselors</h2>
+            <p>Experienced professionals ready to support your journey</p>
+        </div>
+        <div class="counselor-grid">
+            @foreach (var c in counselors.Take(4))
+            {
+                <div class="counselor-card">
+                    <div class="counselor-avatar">@(c.FullName.Length > 0 ? c.FullName.Substring(0, 1) : "C")</div>
+                    <h4>@c.FullName</h4>
+                    <p class="counselor-spec"><i class="fas fa-stethoscope"></i> @c.Specialization</p>
+                    <p class="counselor-exp"><i class="fas fa-clock"></i> @c.ExperienceYears years experience</p>
+                </div>
+            }
+        </div>
+        <div style="text-align:center; margin-top:40px;">
+            <a href="@Url.Action("Index", "Counselor")" class="btn btn-primary">
+                View All Counselors <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </section>
+}
+
+<section class="quote-section">
+    <p class="quote-text">"It's okay to not be okay. What's not okay is suffering in silence."</p>
+    <p class="quote-author">— Start your journey today 💙</p>
+</section>

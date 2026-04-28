@@ -1,0 +1,291 @@
+﻿@{
+    ViewBag.Title = "Peer Support Wall";
+    var posts = ViewBag.Posts as System.Collections.Generic.List<MindfulMe_YashDalavi.Models.PeerPost>;
+    string selectedMood = ViewBag.MoodTag as string ?? "";
+
+    var moodTags = new[] { "Anxious", "Sad", "Happy", "Stressed", "Grateful", "Lonely", "Motivated", "Confused" };
+}
+
+<style>
+    .peer-page {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .peer-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+        .peer-header h1 {
+            color: #2D3047;
+            font-size: 2.3rem;
+            margin-bottom: 10px;
+        }
+
+        .peer-header p {
+            color: #6B7280;
+        }
+
+    .safety-banner {
+        background: linear-gradient(135deg, #EEF1FF, #FFE5EC);
+        border-left: 4px solid #6C63FF;
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        color: #4B5563;
+        font-size: 0.9rem;
+    }
+
+    .action-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+    }
+
+    .btn-share {
+        background: linear-gradient(135deg, #6C63FF, #764ba2);
+        color: white;
+        padding: 12px 28px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: transform 0.3s;
+    }
+
+        .btn-share:hover {
+            transform: translateY(-2px);
+        }
+
+    .mood-filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+
+    .mood-pill {
+        padding: 8px 18px;
+        border-radius: 50px;
+        background: white;
+        border: 2px solid #E5E7EB;
+        color: #4B5563;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+        .mood-pill.active, .mood-pill:hover {
+            background: #6C63FF;
+            color: white;
+            border-color: #6C63FF;
+        }
+
+    .post-card {
+        background: white;
+        border-radius: 18px;
+        padding: 25px;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+        margin-bottom: 18px;
+    }
+
+    .post-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .post-author {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .avatar-tiny {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6C63FF, #FF6B9D);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .author-name {
+        color: #2D3047;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .post-time {
+        color: #9CA3AF;
+        font-size: 0.8rem;
+    }
+
+    .mood-badge {
+        background: #EEF1FF;
+        color: #6C63FF;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .post-content {
+        color: #374151;
+        line-height: 1.7;
+        margin-bottom: 15px;
+        white-space: pre-wrap;
+    }
+
+    .post-footer {
+        display: flex;
+        gap: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #F3F4F6;
+        align-items: center;
+    }
+
+    .action-btn {
+        background: none;
+        border: none;
+        color: #6B7280;
+        font-family: inherit;
+        cursor: pointer;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        transition: background 0.2s;
+    }
+
+        .action-btn:hover {
+            background: #F8F9FC;
+            color: #6C63FF;
+        }
+
+        .action-btn.danger:hover {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+    .btn-view {
+        margin-left: auto;
+        color: #6C63FF;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .empty-wall {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 20px;
+        color: #9CA3AF;
+    }
+
+        .empty-wall i {
+            font-size: 3rem;
+            opacity: 0.4;
+            margin-bottom: 15px;
+        }
+</style>
+
+<div class="peer-page">
+    <div class="peer-header">
+        <h1>💬 Peer Support Wall</h1>
+        <p>You're not alone. Share anonymously. Support others.</p>
+    </div>
+
+    <div class="safety-banner">
+        <i class="fas fa-shield-alt"></i>
+        <strong>Safe space:</strong> Your real identity stays hidden. Random names keep everyone anonymous. Be kind. Report anything hurtful.
+    </div>
+
+    <div class="action-row">
+        <a href="@Url.Action("Create", "Peer")" class="btn-share">
+            <i class="fas fa-pen-fancy"></i> Share Anonymously
+        </a>
+        <span style="color:#6B7280;">
+            <i class="fas fa-users"></i>
+            <strong>@(posts != null ? posts.Count : 0)</strong> post@(posts != null && posts.Count == 1 ? "" : "s")
+        </span>
+    </div>
+
+    <div class="mood-filters">
+        <a href="@Url.Action("Index", "Peer")"
+           class="mood-pill @(string.IsNullOrEmpty(selectedMood) ? "active" : "")">All</a>
+        @foreach (var m in moodTags)
+        {
+            <a href="@Url.Action("Index", "Peer", new { moodTag = m })"
+               class="mood-pill @(m == selectedMood ? "active" : "")">@m</a>
+        }
+    </div>
+
+    @if (posts != null && posts.Count > 0)
+    {
+        foreach (var p in posts)
+        {
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="post-author">
+                        <div class="avatar-tiny">@(p.AnonymousName.Length > 0 ? p.AnonymousName.Substring(0, 1) : "?")</div>
+                        <div>
+                            <div class="author-name">@p.AnonymousName</div>
+                            <div class="post-time">@p.PostedOn.ToString("dd MMM, hh:mm tt")</div>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(p.MoodTag))
+                    {
+                        <span class="mood-badge">@p.MoodTag</span>
+                    }
+                </div>
+
+                <div class="post-content">@p.Content</div>
+
+                <div class="post-footer">
+                    @using (Html.BeginForm("Like", "Peer", new { id = p.PostId }, FormMethod.Post, new { style = "margin:0;" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="action-btn">
+                            <i class="fas fa-heart"></i> @p.LikesCount
+                        </button>
+                    }
+
+                    <a href="@Url.Action("Details", "Peer", new { id = p.PostId })" class="action-btn">
+                        <i class="fas fa-comment"></i> @p.RepliesCount repl@(p.RepliesCount == 1 ? "y" : "ies")
+                    </a>
+
+                    @using (Html.BeginForm("Report", "Peer", new { id = p.PostId }, FormMethod.Post, new { style = "margin:0;" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="action-btn danger" onclick="return confirm('Report this post?');">
+                            <i class="fas fa-flag"></i>
+                        </button>
+                    }
+
+                    <a href="@Url.Action("Details", "Peer", new { id = p.PostId })" class="btn-view">View →</a>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="empty-wall">
+            <i class="fas fa-comment-slash"></i>
+            <h3>No posts yet</h3>
+            <p>Be the first to share. Someone out there needs to hear they're not alone.</p>
+        </div>
+    }
+</div>

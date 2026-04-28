@@ -1,0 +1,323 @@
+﻿@model MindfulMe_YashDalavi.Models.Activity
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<style>
+    .play-page {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .back-link {
+        color: #6C63FF;
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: inline-block;
+    }
+
+    .play-header {
+        margin-bottom: 30px;
+    }
+
+        .play-header .icon {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+        }
+
+        .play-header h1 {
+            color: #2D3047;
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+        }
+
+        .play-header .category {
+            color: #6C63FF;
+            font-size: 0.9rem;
+            background: #EEF1FF;
+            padding: 5px 16px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+    .breathing-box {
+        background: linear-gradient(135deg, #EEF1FF 0%, #FFE5EC 100%);
+        padding: 60px 30px;
+        border-radius: 24px;
+        margin: 30px 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .breathing-circle {
+        width: 200px;
+        height: 200px;
+        margin: 0 auto;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6C63FF, #764ba2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.3rem;
+        font-weight: 600;
+        transition: transform 4s ease-in-out;
+        box-shadow: 0 10px 40px rgba(108, 99, 255, 0.3);
+    }
+
+        .breathing-circle.inhale {
+            transform: scale(1.3);
+        }
+
+        .breathing-circle.hold {
+            transform: scale(1.3);
+        }
+
+        .breathing-circle.exhale {
+            transform: scale(0.7);
+        }
+
+    .timer-display {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #6C63FF;
+        margin-top: 25px;
+    }
+
+    .phase-text {
+        color: #6B7280;
+        font-size: 1.2rem;
+        margin-top: 10px;
+    }
+
+    .instruction-card {
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        text-align: left;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+        margin-bottom: 30px;
+    }
+
+        .instruction-card h3 {
+            color: #2D3047;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .instruction-card p {
+            color: #4B5563;
+            line-height: 1.7;
+        }
+
+    .controls {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+    }
+
+    .btn-control {
+        padding: 14px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        border: none;
+        font-family: inherit;
+        transition: all 0.3s;
+    }
+
+    .btn-start-big {
+        background: linear-gradient(135deg, #6C63FF, #764ba2);
+        color: white;
+    }
+
+        .btn-start-big:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(108, 99, 255, 0.3);
+        }
+
+    .btn-stop {
+        background: #FEE2E2;
+        color: #991B1B;
+    }
+
+        .btn-stop:hover {
+            background: #FCA5A5;
+            color: white;
+        }
+
+    .complete-card {
+        background: white;
+        padding: 35px;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+    }
+
+        .complete-card h3 {
+            color: #2D3047;
+            margin-bottom: 15px;
+        }
+
+    .feedback-area {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 1rem;
+        resize: vertical;
+        min-height: 80px;
+        margin-bottom: 15px;
+    }
+
+        .feedback-area:focus {
+            outline: none;
+            border-color: #6C63FF;
+        }
+
+    .btn-complete {
+        background: linear-gradient(135deg, #10B981, #059669);
+        color: white;
+        padding: 14px 35px;
+        border-radius: 50px;
+        border: none;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+        .btn-complete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+</style>
+
+<div class="play-page">
+    <div style="text-align:left;">
+        <a href="@Url.Action("Index", "Activity")" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to activities
+        </a>
+    </div>
+
+    <div class="play-header">
+        <div class="icon">@Model.IconEmoji</div>
+        <h1>@Model.Title</h1>
+        <span class="category">@Model.Category · @Model.DurationMinutes min</span>
+    </div>
+
+    <div class="breathing-box">
+        <div class="breathing-circle" id="circle">Breathe</div>
+        <div class="timer-display" id="timer">@Model.DurationMinutes:00</div>
+        <div class="phase-text" id="phase">Press Start when ready</div>
+    </div>
+
+    <div class="controls">
+        <button type="button" class="btn-control btn-start-big" id="startBtn" onclick="startSession()">
+            <i class="fas fa-play"></i> Start
+        </button>
+        <button type="button" class="btn-control btn-stop" id="stopBtn" onclick="stopSession()" style="display:none;">
+            <i class="fas fa-stop"></i> Stop
+        </button>
+    </div>
+
+    <div class="instruction-card">
+        <h3><i class="fas fa-info-circle"></i> How to do this</h3>
+        <p>@Model.Instructions</p>
+    </div>
+
+    <div class="complete-card">
+        <h3><i class="fas fa-check-circle"></i> Done with the session?</h3>
+        @using (Html.BeginForm("Complete", "Activity", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="activityId" value="@Model.ActivityId" />
+            <textarea name="feedback" class="feedback-area" maxlength="300"
+                      placeholder="How did you feel after this activity? (optional)"></textarea>
+            <button type="submit" class="btn-complete">
+                <i class="fas fa-trophy"></i> Mark as Completed
+            </button>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var totalSeconds = @(Model.DurationMinutes * 60);
+        var remaining = totalSeconds;
+        var timerInterval = null;
+        var breathInterval = null;
+        var breathPhase = 0;
+        var isBreathing = @(Model.Category == "Breathing" ? "true" : "false");
+
+        function formatTime(sec) {
+            var m = Math.floor(sec / 60);
+            var s = sec % 60;
+            return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+        }
+
+        function startSession() {
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'inline-block';
+            document.getElementById('phase').textContent = 'Session started';
+
+            timerInterval = setInterval(function () {
+                remaining--;
+                document.getElementById('timer').textContent = formatTime(remaining);
+                if (remaining <= 0) {
+                    stopSession();
+                    document.getElementById('phase').textContent = '✨ Session complete! Well done.';
+                }
+            }, 1000);
+
+            if (isBreathing) {
+                doBreathingCycle();
+                breathInterval = setInterval(doBreathingCycle, 12000);
+            } else {
+                var circle = document.getElementById('circle');
+                circle.classList.add('inhale');
+                document.getElementById('phase').textContent = 'Relax and focus';
+            }
+        }
+
+        function doBreathingCycle() {
+            var circle = document.getElementById('circle');
+            var phase = document.getElementById('phase');
+
+            circle.classList.remove('inhale', 'hold', 'exhale');
+            circle.classList.add('inhale');
+            circle.textContent = 'Inhale';
+            phase.textContent = 'Breathe in slowly... 4 seconds';
+
+            setTimeout(function () {
+                circle.textContent = 'Hold';
+                phase.textContent = 'Hold your breath... 4 seconds';
+            }, 4000);
+
+            setTimeout(function () {
+                circle.classList.remove('inhale');
+                circle.classList.add('exhale');
+                circle.textContent = 'Exhale';
+                phase.textContent = 'Release slowly... 4 seconds';
+            }, 8000);
+        }
+
+        function stopSession() {
+            if (timerInterval) clearInterval(timerInterval);
+            if (breathInterval) clearInterval(breathInterval);
+            document.getElementById('startBtn').style.display = 'inline-block';
+            document.getElementById('stopBtn').style.display = 'none';
+            document.getElementById('circle').classList.remove('inhale', 'hold', 'exhale');
+            document.getElementById('circle').textContent = 'Breathe';
+            document.getElementById('phase').textContent = 'Session paused';
+        }
+    </script>
+}

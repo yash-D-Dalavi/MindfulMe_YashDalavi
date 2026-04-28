@@ -1,0 +1,349 @@
+﻿@{
+    ViewBag.Title = "Admin Panel";
+    int totalUsers = ViewBag.TotalUsers ?? 0;
+    int totalCounselors = ViewBag.TotalCounselors ?? 0;
+    int totalMoodEntries = ViewBag.TotalMoodEntries ?? 0;
+    int totalPosts = ViewBag.TotalPosts ?? 0;
+    var stats = ViewBag.BookingStats as System.Collections.Generic.Dictionary<string, int>;
+    var reported = ViewBag.ReportedPosts as System.Collections.Generic.List<MindfulMe_YashDalavi.Models.PeerPost>;
+
+    int pendingB = (stats != null && stats.ContainsKey("Pending")) ? stats["Pending"] : 0;
+    int confirmedB = (stats != null && stats.ContainsKey("Confirmed")) ? stats["Confirmed"] : 0;
+    int completedB = (stats != null && stats.ContainsKey("Completed")) ? stats["Completed"] : 0;
+    int cancelledB = (stats != null && stats.ContainsKey("Cancelled")) ? stats["Cancelled"] : 0;
+    int totalBookings = pendingB + confirmedB + completedB + cancelledB;
+}
+
+<style>
+    .admin-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    .admin-header {
+        background: linear-gradient(135deg, #1F2937, #374151);
+        color: white;
+        padding: 35px 40px;
+        border-radius: 24px;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .admin-badge {
+        width: 70px;
+        height: 70px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #6C63FF, #FF6B9D);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        flex-shrink: 0;
+    }
+
+    .admin-header h1 {
+        font-size: 1.8rem;
+        margin-bottom: 5px;
+    }
+
+    .admin-header p {
+        opacity: 0.85;
+    }
+
+    .admin-nav {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+
+        .admin-nav a {
+            padding: 10px 22px;
+            background: white;
+            border: 2px solid #E5E7EB;
+            color: #4B5563;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+            .admin-nav a.active, .admin-nav a:hover {
+                background: #6C63FF;
+                color: white;
+                border-color: #6C63FF;
+            }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-box {
+        background: white;
+        padding: 25px;
+        border-radius: 18px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        border-left: 5px solid #6C63FF;
+    }
+
+        .stat-box.users {
+            border-left-color: #3B82F6;
+        }
+
+        .stat-box.mood {
+            border-left-color: #FF6B9D;
+        }
+
+        .stat-box.counselor {
+            border-left-color: #10B981;
+        }
+
+        .stat-box.post {
+            border-left-color: #F59E0B;
+        }
+
+        .stat-box .icon {
+            font-size: 1.6rem;
+            color: #6C63FF;
+            margin-bottom: 12px;
+        }
+
+        .stat-box.users .icon {
+            color: #3B82F6;
+        }
+
+        .stat-box.mood .icon {
+            color: #FF6B9D;
+        }
+
+        .stat-box.counselor .icon {
+            color: #10B981;
+        }
+
+        .stat-box.post .icon {
+            color: #F59E0B;
+        }
+
+        .stat-box .label {
+            color: #6B7280;
+            font-size: 0.85rem;
+        }
+
+        .stat-box .value {
+            color: #2D3047;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+    .panel {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        margin-bottom: 25px;
+    }
+
+    .panel-title {
+        color: #2D3047;
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .booking-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 15px;
+    }
+
+    .booking-stat {
+        padding: 18px;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .bs-pending {
+        background: #FEF3C7;
+        color: #92400E;
+    }
+
+    .bs-confirmed {
+        background: #DBEAFE;
+        color: #1E40AF;
+    }
+
+    .bs-completed {
+        background: #D1FAE5;
+        color: #065F46;
+    }
+
+    .bs-cancelled {
+        background: #FEE2E2;
+        color: #991B1B;
+    }
+
+    .bs-total {
+        background: linear-gradient(135deg, #EEF1FF, #FFE5EC);
+        color: #2D3047;
+    }
+
+    .booking-stat .big {
+        font-size: 1.8rem;
+        font-weight: 800;
+    }
+
+    .booking-stat .small {
+        font-size: 0.85rem;
+        margin-top: 4px;
+    }
+
+    .reported-card {
+        background: #FFF7ED;
+        border-left: 4px solid #F97316;
+        padding: 18px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+    }
+
+        .reported-card .meta {
+            color: #6B7280;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+
+        .reported-card .content {
+            color: #374151;
+            margin-bottom: 10px;
+        }
+
+    .btn-hide {
+        background: #991B1B;
+        color: white;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    .empty {
+        text-align: center;
+        color: #9CA3AF;
+        padding: 30px;
+    }
+</style>
+
+<div class="admin-page">
+    <div class="admin-header">
+        <div class="admin-badge">🛡️</div>
+        <div>
+            <h1>Admin Control Panel</h1>
+            <p>Manage users, counselors, content, and platform health.</p>
+        </div>
+    </div>
+
+    <div class="admin-nav">
+        <a href="@Url.Action("Index", "Admin")" class="active"><i class="fas fa-chart-pie"></i> Overview</a>
+        <a href="@Url.Action("Counselors", "Admin")"><i class="fas fa-user-md"></i> Counselors</a>
+        <a href="@Url.Action("Reports", "Admin")"><i class="fas fa-flag"></i> Reported Posts</a>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-box users">
+            <div class="icon"><i class="fas fa-users"></i></div>
+            <div class="label">Total Users</div>
+            <div class="value">@totalUsers</div>
+        </div>
+        <div class="stat-box counselor">
+            <div class="icon"><i class="fas fa-user-md"></i></div>
+            <div class="label">Active Counselors</div>
+            <div class="value">@totalCounselors</div>
+        </div>
+        <div class="stat-box mood">
+            <div class="icon"><i class="fas fa-smile"></i></div>
+            <div class="label">Mood Entries</div>
+            <div class="value">@totalMoodEntries</div>
+        </div>
+        <div class="stat-box post">
+            <div class="icon"><i class="fas fa-comments"></i></div>
+            <div class="label">Community Posts</div>
+            <div class="value">@totalPosts</div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2 class="panel-title"><i class="fas fa-calendar-check"></i> Booking Overview</h2>
+        <div class="booking-stats-grid">
+            <div class="booking-stat bs-total">
+                <div class="big">@totalBookings</div>
+                <div class="small">Total Bookings</div>
+            </div>
+            <div class="booking-stat bs-pending">
+                <div class="big">@pendingB</div>
+                <div class="small">Pending</div>
+            </div>
+            <div class="booking-stat bs-confirmed">
+                <div class="big">@confirmedB</div>
+                <div class="small">Confirmed</div>
+            </div>
+            <div class="booking-stat bs-completed">
+                <div class="big">@completedB</div>
+                <div class="small">Completed</div>
+            </div>
+            <div class="booking-stat bs-cancelled">
+                <div class="big">@cancelledB</div>
+                <div class="small">Cancelled</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2 class="panel-title">
+            <i class="fas fa-flag"></i> Reported Posts
+            @if (reported != null && reported.Count > 0)
+            {
+                <span style="background:#FEE2E2; color:#991B1B; padding:3px 10px; border-radius:20px; font-size:0.8rem; margin-left:auto;">@reported.Count pending</span>
+            }
+        </h2>
+
+        @if (reported != null && reported.Count > 0)
+        {
+            foreach (var p in reported)
+            {
+                <div class="reported-card">
+                    <div class="meta">
+                        <i class="fas fa-user-secret"></i> @p.AnonymousName ·
+                        @p.PostedOn.ToString("dd MMM yyyy, hh:mm tt") ·
+                        @if (!string.IsNullOrWhiteSpace(p.MoodTag))
+                        {<span><i class="fas fa-tag"></i> @p.MoodTag</span>}
+                    </div>
+                    <div class="content">@p.Content</div>
+                    @using (Html.BeginForm("HidePost", "Admin", new { id = p.PostId }, FormMethod.Post, new { style = "margin:0;" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn-hide" onclick="return confirm('Hide this post from everyone?');">
+                            <i class="fas fa-eye-slash"></i> Hide Post
+                        </button>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty">
+                <i class="fas fa-check-circle" style="font-size:2rem; color:#10B981; opacity:0.5;"></i>
+                <p style="margin-top:10px;">All clear! No reported posts.</p>
+            </div>
+        }
+    </div>
+</div>

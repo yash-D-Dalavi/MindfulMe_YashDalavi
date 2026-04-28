@@ -1,0 +1,221 @@
+﻿@{
+    ViewBag.Title = "Wellness Activities";
+    var activities = ViewBag.Activities as System.Collections.Generic.List<MindfulMe_YashDalavi.Models.Activity>;
+    var categories = ViewBag.Categories as System.Collections.Generic.List<string>;
+    string selectedCategory = ViewBag.SelectedCategory as string ?? "";
+    int totalMinutes = ViewBag.TotalMinutes ?? 0;
+}
+
+<style>
+    .activity-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: #2D3047;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #6B7280;
+            font-size: 1.1rem;
+        }
+
+    .stats-banner {
+        background: linear-gradient(135deg, #6C63FF, #764ba2);
+        color: white;
+        padding: 30px;
+        border-radius: 20px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin-bottom: 35px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .stat-block {
+        text-align: center;
+    }
+
+        .stat-block .big {
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        .stat-block .small {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+    .category-filters {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+
+    .cat-pill {
+        padding: 10px 22px;
+        border-radius: 50px;
+        background: white;
+        color: #6C63FF;
+        border: 2px solid #6C63FF;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+    }
+
+        .cat-pill.active, .cat-pill:hover {
+            background: #6C63FF;
+            color: white;
+        }
+
+    .activities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+    }
+
+    .activity-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px 25px;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+        transition: all 0.3s;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+
+        .activity-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(108, 99, 255, 0.15);
+        }
+
+    .act-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #EEF1FF, #E0E7FF);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        margin: 0 auto 15px;
+    }
+
+    .act-category {
+        background: #EEF1FF;
+        color: #6C63FF;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: 12px;
+    }
+
+    .activity-card h3 {
+        color: #2D3047;
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+    }
+
+    .act-description {
+        color: #6B7280;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        flex: 1;
+    }
+
+    .act-duration {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        color: #6B7280;
+        font-size: 0.85rem;
+        margin-bottom: 15px;
+    }
+
+    .btn-start {
+        background: linear-gradient(135deg, #6C63FF, #764ba2);
+        color: white;
+        padding: 12px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: transform 0.3s;
+    }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+        }
+</style>
+
+<div class="activity-page">
+    <div class="page-header">
+        <h1>🧘 Wellness Activities</h1>
+        <p>Science-backed techniques to calm your mind and body.</p>
+    </div>
+
+    <div class="stats-banner">
+        <div class="stat-block">
+            <div class="big">@totalMinutes</div>
+            <div class="small">Minutes of self-care</div>
+        </div>
+        <div class="stat-block">
+            <div class="big">@(activities != null ? activities.Count : 0)</div>
+            <div class="small">Activities available</div>
+        </div>
+        <div class="stat-block">
+            <div class="big">@(categories != null ? categories.Count : 0)</div>
+            <div class="small">Categories</div>
+        </div>
+    </div>
+
+    <div class="category-filters">
+        <a href="@Url.Action("Index", "Activity")"
+           class="cat-pill @(string.IsNullOrEmpty(selectedCategory) ? "active" : "")">All</a>
+        @if (categories != null)
+        {
+            foreach (var cat in categories)
+            {
+                <a href="@Url.Action("Index", "Activity", new { category = cat })"
+                   class="cat-pill @(cat == selectedCategory ? "active" : "")">@cat</a>
+            }
+        }
+    </div>
+
+    <div class="activities-grid">
+        @if (activities != null)
+        {
+            foreach (var a in activities)
+            {
+                <div class="activity-card">
+                    <div class="act-icon">@a.IconEmoji</div>
+                    <span class="act-category">@a.Category</span>
+                    <h3>@a.Title</h3>
+                    <p class="act-description">@a.Description</p>
+                    <div class="act-duration">
+                        <i class="fas fa-clock"></i> @a.DurationMinutes minutes
+                    </div>
+                    <a href="@Url.Action("Play", "Activity", new { id = a.ActivityId })" class="btn-start">
+                        <i class="fas fa-play"></i> Start
+                    </a>
+                </div>
+            }
+        }
+    </div>
+</div>

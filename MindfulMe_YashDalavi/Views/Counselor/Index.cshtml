@@ -1,0 +1,326 @@
+﻿@{
+    ViewBag.Title = "Find a Counselor";
+    var counselors = ViewBag.Counselors as System.Collections.Generic.List<MindfulMe_YashDalavi.Models.Counselor>;
+    var specializations = ViewBag.Specializations as System.Collections.Generic.List<string>;
+    string keyword = ViewBag.Keyword as string ?? "";
+    string selectedSpec = ViewBag.Specialization as string ?? "";
+}
+
+<style>
+    .counselor-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: #2D3047;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #6B7280;
+            font-size: 1.1rem;
+        }
+
+    .search-card {
+        background: white;
+        padding: 25px;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+        margin-bottom: 35px;
+    }
+
+    .search-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 15px;
+        align-items: end;
+    }
+
+    .search-field label {
+        display: block;
+        font-weight: 600;
+        color: #2D3047;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+    }
+
+    .search-field input, .search-field select {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #E5E7EB;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 0.95rem;
+    }
+
+        .search-field input:focus, .search-field select:focus {
+            outline: none;
+            border-color: #6C63FF;
+        }
+
+    .search-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-search {
+        background: linear-gradient(135deg, #6C63FF, #764ba2);
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+    .btn-clear {
+        background: white;
+        border: 2px solid #E5E7EB;
+        color: #6B7280;
+        padding: 10px 20px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .results-info {
+        color: #6B7280;
+        margin-bottom: 20px;
+    }
+
+    .counselor-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+    }
+
+    .counselor-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+        transition: transform 0.3s;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .counselor-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .c-avatar {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6C63FF, #FF6B9D);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .c-card h3 {
+        color: #2D3047;
+        margin-bottom: 5px;
+        font-size: 1.2rem;
+    }
+
+    .c-spec {
+        color: #6C63FF;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .c-meta {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+        font-size: 0.85rem;
+        color: #6B7280;
+    }
+
+        .c-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+    .c-fee {
+        background: linear-gradient(135deg, #EEF1FF, #FFE5EC);
+        padding: 12px 15px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+        .c-fee .amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #6C63FF;
+        }
+
+        .c-fee .label {
+            font-size: 0.85rem;
+            color: #6B7280;
+        }
+
+    .c-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: auto;
+    }
+
+    .btn-book {
+        flex: 1;
+        background: linear-gradient(135deg, #6C63FF, #764ba2);
+        color: white;
+        padding: 12px;
+        border-radius: 10px;
+        text-align: center;
+        text-decoration: none;
+        font-weight: 600;
+        transition: transform 0.3s;
+    }
+
+        .btn-book:hover {
+            transform: translateY(-2px);
+        }
+
+    .btn-view {
+        background: white;
+        border: 2px solid #6C63FF;
+        color: #6C63FF;
+        padding: 10px 20px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .empty-result {
+        text-align: center;
+        padding: 60px 20px;
+        color: #9CA3AF;
+        background: white;
+        border-radius: 20px;
+    }
+
+        .empty-result i {
+            font-size: 3rem;
+            opacity: 0.4;
+            margin-bottom: 15px;
+        }
+
+    @@media (max-width: 768px) {
+        .search-form {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="counselor-page">
+    <div class="page-header">
+        <h1><i class="fas fa-user-md"></i> Find Your Counselor</h1>
+        <p>Connect with verified mental health professionals.</p>
+    </div>
+
+    <div class="search-card">
+        @using (Html.BeginForm("Index", "Counselor", FormMethod.Get))
+        {
+            <div class="search-form">
+                <div class="search-field">
+                    <label><i class="fas fa-search"></i> Search by name or expertise</label>
+                    <input type="text" name="keyword" value="@keyword" placeholder="e.g. anxiety, depression, Priya..." />
+                </div>
+                <div class="search-field">
+                    <label><i class="fas fa-filter"></i> Specialization</label>
+                    <select name="specialization">
+                        <option value="">All specializations</option>
+                        @if (specializations != null)
+                        {
+                            foreach (var s in specializations)
+                            {
+                                if (s == selectedSpec)
+                                {
+                                    <option value="@s" selected="selected">@s</option>
+                                }
+                                else
+                                {
+                                    <option value="@s">@s</option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="search-buttons">
+                    <button type="submit" class="btn-search"><i class="fas fa-search"></i> Search</button>
+                    <a href="@Url.Action("Index", "Counselor")" class="btn-clear">Clear</a>
+                </div>
+            </div>
+        }
+    </div>
+
+    <p class="results-info">
+        <i class="fas fa-users"></i>
+        Showing <strong>@(counselors != null ? counselors.Count : 0)</strong> counselors
+    </p>
+
+    @if (counselors != null && counselors.Count > 0)
+    {
+        <div class="counselor-grid">
+            @foreach (var c in counselors)
+            {
+                <div class="counselor-card">
+                    <div class="c-avatar">@(c.FullName.Length > 0 ? c.FullName.Substring(0, 1) : "C")</div>
+                    <h3>@c.FullName</h3>
+                    <div class="c-spec"><i class="fas fa-stethoscope"></i> @c.Specialization</div>
+                    <div class="c-meta">
+                        <span><i class="fas fa-clock"></i> @c.ExperienceYears yrs exp</span>
+                        <span><i class="fas fa-envelope"></i> Verified</span>
+                    </div>
+                    <div class="c-fee">
+                        <div class="amount">₹@c.FeePerSession.ToString("N0")</div>
+                        <div class="label">per session</div>
+                    </div>
+                    <div class="c-actions">
+                        <a href="@Url.Action("Details", "Counselor", new { id = c.CounselorId })" class="btn-view">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="@Url.Action("Book", "Booking", new { counselorId = c.CounselorId })" class="btn-book">
+                            <i class="fas fa-calendar-plus"></i> Book Session
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-result">
+            <i class="fas fa-search"></i>
+            <h3>No counselors found</h3>
+            <p>Try adjusting your search filters.</p>
+        </div>
+    }
+
+    <div style="text-align:center; margin-top:40px;">
+        <a href="@Url.Action("MyBookings", "Booking")" class="btn-clear">
+            <i class="fas fa-calendar-check"></i> View My Bookings
+        </a>
+    </div>
+</div>

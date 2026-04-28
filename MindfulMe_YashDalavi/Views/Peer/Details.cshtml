@@ -1,0 +1,254 @@
+﻿@model MindfulMe_YashDalavi.Models.PeerPost
+@{
+    ViewBag.Title = "Post Discussion";
+    string suggestedName = ViewBag.SuggestedName as string ?? "Anonymous";
+}
+
+<style>
+    .details-page {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .back-link {
+        color: #6C63FF;
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: inline-block;
+    }
+
+    .original-post {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+        margin-bottom: 30px;
+    }
+
+    .post-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+    }
+
+    .post-author {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6C63FF, #FF6B9D);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .author-name {
+        color: #2D3047;
+        font-weight: 600;
+    }
+
+    .post-time {
+        color: #9CA3AF;
+        font-size: 0.85rem;
+    }
+
+    .mood-badge {
+        background: #EEF1FF;
+        color: #6C63FF;
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .post-content {
+        color: #374151;
+        line-height: 1.8;
+        font-size: 1.05rem;
+        white-space: pre-wrap;
+    }
+
+    .replies-header {
+        color: #2D3047;
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+    }
+
+    .reply-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(108, 99, 255, 0.05);
+        margin-bottom: 12px;
+        border-left: 4px solid #6C63FF;
+    }
+
+    .reply-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .avatar-small {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #34D399, #6C63FF);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+
+    .reply-content {
+        color: #4B5563;
+        line-height: 1.6;
+    }
+
+    .reply-form {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+        margin-top: 30px;
+    }
+
+        .reply-form h3 {
+            color: #2D3047;
+            margin-bottom: 15px;
+        }
+
+    .reply-identity {
+        background: #EEF1FF;
+        padding: 12px 16px;
+        border-radius: 10px;
+        color: #6C63FF;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+    }
+
+    .reply-area {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 1rem;
+        resize: vertical;
+        min-height: 90px;
+        margin-bottom: 12px;
+    }
+
+        .reply-area:focus {
+            outline: none;
+            border-color: #6C63FF;
+        }
+
+    .btn-reply {
+        background: linear-gradient(135deg, #6C63FF, #764ba2);
+        color: white;
+        padding: 12px 28px;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+    .empty-replies {
+        text-align: center;
+        color: #9CA3AF;
+        padding: 30px;
+    }
+</style>
+
+<div class="details-page">
+    <a href="@Url.Action("Index", "Peer")" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to wall
+    </a>
+
+    <div class="original-post">
+        <div class="post-header">
+            <div class="post-author">
+                <div class="avatar">@(Model.AnonymousName.Length > 0 ? Model.AnonymousName.Substring(0, 1) : "?")</div>
+                <div>
+                    <div class="author-name">@Model.AnonymousName</div>
+                    <div class="post-time">@Model.PostedOn.ToString("dd MMM yyyy, hh:mm tt")</div>
+                </div>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.MoodTag))
+            {
+                <span class="mood-badge">@Model.MoodTag</span>
+            }
+        </div>
+
+        <div class="post-content">@Model.Content</div>
+
+        <div style="margin-top:18px; color:#6B7280; font-size:0.9rem;">
+            <i class="fas fa-heart"></i> @Model.LikesCount ·
+            <i class="fas fa-comment"></i> @(Model.Replies != null ? Model.Replies.Count : 0) replies
+        </div>
+    </div>
+
+    <h2 class="replies-header"><i class="fas fa-comments"></i> Replies</h2>
+
+    @if (Model.Replies != null && Model.Replies.Count > 0)
+    {
+        foreach (var r in Model.Replies)
+        {
+            <div class="reply-card">
+                <div class="reply-header">
+                    <div class="avatar-small">@(r.AnonymousName.Length > 0 ? r.AnonymousName.Substring(0, 1) : "?")</div>
+                    <div>
+                        <div style="font-weight:600; color:#2D3047; font-size:0.9rem;">@r.AnonymousName</div>
+                        <div style="color:#9CA3AF; font-size:0.8rem;">@r.RepliedOn.ToString("dd MMM, hh:mm tt")</div>
+                    </div>
+                </div>
+                <div class="reply-content">@r.Content</div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="empty-replies">
+            <i class="fas fa-comment-dots"></i> Be the first to respond with kindness.
+        </div>
+    }
+
+    <div class="reply-form">
+        <h3><i class="fas fa-reply"></i> Reply anonymously</h3>
+
+        @using (Html.BeginForm("Reply", "Peer", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="postId" value="@Model.PostId" />
+            <input type="hidden" name="anonymousName" value="@suggestedName" />
+
+            <div class="reply-identity">
+                <i class="fas fa-user-secret"></i> Replying as <strong>@suggestedName</strong>
+            </div>
+
+            <textarea name="content" class="reply-area" maxlength="500"
+                      placeholder="Share your support, advice, or a kind word..." required></textarea>
+
+            <button type="submit" class="btn-reply">
+                <i class="fas fa-paper-plane"></i> Post Reply
+            </button>
+        }
+    </div>
+</div>

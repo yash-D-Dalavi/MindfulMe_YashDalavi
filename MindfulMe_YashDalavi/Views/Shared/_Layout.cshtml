@@ -1,0 +1,247 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - MindfulMe</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-dark: #5046e5;
+            --secondary: #FF6B9D;
+            --accent: #00D9A7;
+            --bg-light: #F8F9FC;
+            --bg-calm: #EEF1FF;
+            --text-dark: #2D3047;
+            --text-muted: #6B7280;
+            --card-bg: #FFFFFF;
+            --shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--card-bg);
+            padding: 15px 40px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            align-items: center;
+        }
+
+            .nav-links a {
+                text-decoration: none;
+                color: var(--text-dark);
+                font-weight: 500;
+                transition: color 0.3s;
+                font-size: 0.95rem;
+            }
+
+                .nav-links a:hover {
+                    color: var(--primary);
+                }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background: var(--primary-dark);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(108, 99, 255, 0.3);
+            }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-family: inherit;
+        }
+
+            .btn-outline:hover {
+                background: var(--primary);
+                color: white;
+            }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
+
+        footer {
+            background: var(--text-dark);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 60px;
+        }
+
+        .crisis-banner {
+            background: linear-gradient(135deg, var(--secondary), #FF8E72);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+
+            .crisis-banner a {
+                color: white;
+                font-weight: 600;
+                text-decoration: underline;
+            }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+
+        .alert-success {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .alert-error {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .alert-info {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+    </style>
+</head>
+<body>
+    <div class="crisis-banner">
+        <i class="fas fa-phone"></i> In crisis? Call iCall: <a href="tel:9152987821">9152-987-821</a> (free, confidential) | AASRA: <a href="tel:9820466726">98204-66726</a>
+    </div>
+
+    <nav class="navbar">
+        <a href="@Url.Action("Index", "Home")" class="navbar-brand">
+            <i class="fas fa-brain"></i> MindfulMe
+        </a>
+        <ul class="nav-links">
+            <li><a href="@Url.Action("Index", "Home")"><i class="fas fa-home"></i> Home</a></li>
+            @if (Request.IsAuthenticated)
+            {
+                <li><a href="@Url.Action("Index", "Dashboard")"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="@Url.Action("Index", "Mood")"><i class="fas fa-smile"></i> Mood</a></li>
+                <li><a href="@Url.Action("Index", "Activity")"><i class="fas fa-leaf"></i> Activities</a></li>
+                <li><a href="@Url.Action("Index", "Counselor")"><i class="fas fa-user-md"></i> Counselors</a></li>
+                <li><a href="@Url.Action("Index", "Peer")"><i class="fas fa-comments"></i> Peer Wall</a></li>
+                if (User.IsInRole("Admin"))
+                {
+                    <li><a href="@Url.Action("Index", "Admin")"><i class="fas fa-cog"></i> Admin</a></li>
+                }
+                <li style="margin:0; padding:0;">
+                    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", style = "margin:0;" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline" style="cursor:pointer;">
+                            <i class="fas fa-sign-out-alt"></i> Logout (@User.Identity.Name)
+                        </button>
+                    }
+                </li>
+            }
+            else
+            {
+                <li><a href="@Url.Action("About", "Home")">About</a></li>
+                <li><a href="@Url.Action("Contact", "Home")">Contact</a></li>
+                <li>@Html.ActionLink("Login", "Login", "Account", null, new { @class = "btn btn-outline" })</li>
+                <li>@Html.ActionLink("Sign Up", "Register", "Account", null, new { @class = "btn btn-primary" })</li>
+            }
+        </ul>
+    </nav>
+
+    <main>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="container">
+                <div class="alert alert-success"><i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]</div>
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="container">
+                <div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]</div>
+            </div>
+        }
+
+        @RenderBody()
+    </main>
+
+    <footer>
+        <p><i class="fas fa-heart" style="color:#FF6B9D;"></i> MindfulMe &copy; @DateTime.Now.Year — Built by Yash Dalavi</p>
+        <p style="opacity:0.7; margin-top:5px;">A Student Mental Wellness Companion</p>
+    </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
